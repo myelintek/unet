@@ -39,6 +39,8 @@ Path(predict_path).mkdir(parents=True, exist_ok=True)
 if aug_path:
     Path(aug_path).mkdir(parents=True, exist_ok=True)
 
+test_file_num = len(os.listdir(test_path))
+
 data_gen_args = dict(rotation_range=0.2,
                     width_shift_range=0.05,
                     height_shift_range=0.05,
@@ -61,5 +63,5 @@ model_checkpoint = ModelCheckpoint(checkpoint_path, monitor='loss',verbose=1, sa
 model.fit_generator(myGene,steps_per_epoch=steps_per_epoch,epochs=total_epochs,callbacks=[model_checkpoint, TrainLogger()], verbose=0)
 
 testGene = testGenerator(test_path)
-results = model.predict_generator(testGene,30,verbose=1)
+results = model.predict_generator(testGene,test_file_num,verbose=1)
 saveResult(predict_path,results)
