@@ -1,16 +1,14 @@
 import numpy as np 
-import os
 import skimage.io as io
 import skimage.transform as trans
 import numpy as np
 from keras.models import *
 from keras.layers import *
 from keras.optimizers import *
-from keras.callbacks import ModelCheckpoint, LearningRateScheduler
-from keras import backend as keras
+import keras as keras
 
 
-def unet(pretrained_weights = None,input_size = (256,256,1)):
+def unet(pretrained_weights = None,input_size = (256,256,1), gpus = 1):
     inputs = Input(input_size)
     conv1 = Conv2D(64, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal')(inputs)
     conv1 = Conv2D(64, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal')(conv1)
@@ -53,6 +51,8 @@ def unet(pretrained_weights = None,input_size = (256,256,1)):
     conv10 = Conv2D(1, 1, activation = 'sigmoid')(conv9)
 
     model = Model(input = inputs, output = conv10)
+    if gpus > 1:
+        model = keras.utils.multi_gpu_model(model, gpus)
 
     model.compile(optimizer = Adam(lr = 1e-4), loss = 'binary_crossentropy', metrics = ['accuracy'])
     
