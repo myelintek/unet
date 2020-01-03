@@ -27,10 +27,13 @@ train_path='/mlsteam/input/train'
 test_path='/mlsteam/input/test'
 predict_path='./data/predict'
 checkpoint_path='./unet_membrane.hdf5'
+restore_path=''
 
 #aug_path='./data/aug'
 aug_path=None
 batch_one_gpu=2
+steps_per_epoch=400
+total_epochs=1
 
 Path(predict_path).mkdir(parents=True, exist_ok=True)
 if aug_path:
@@ -44,7 +47,10 @@ data_gen_args = dict(rotation_range=0.2,
                     horizontal_flip=True,
                     fill_mode='nearest')
 
-model = unet(gpus=gpu_num)
+if restore_path:
+    model = unet(pretrained_weights=checkpoint_path ,gpus=gpu_num)
+else
+    model = unet(gpus=gpu_num)
 
 class TrainLogger(Callback):
     def on_batch_end(self, batch, logs={}):
@@ -52,7 +58,7 @@ class TrainLogger(Callback):
 
 myGene = trainGenerator(batch_one_gpu,train_path,'image','label',data_gen_args,save_to_dir = aug_path)
 model_checkpoint = ModelCheckpoint(checkpoint_path, monitor='loss',verbose=1, save_best_only=True)
-model.fit_generator(myGene,steps_per_epoch=400,epochs=1,callbacks=[model_checkpoint, TrainLogger()], verbose=0)
+model.fit_generator(myGene,steps_per_epoch=steps_per_epoch,epochs=total_epochs,callbacks=[model_checkpoint, TrainLogger()], verbose=0)
 
 testGene = testGenerator(test_path)
 results = model.predict_generator(testGene,30,verbose=1)
