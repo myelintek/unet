@@ -51,7 +51,7 @@ data_gen_args = dict(rotation_range=0.2,
 
 if restore_path:
     model = unet(pretrained_weights=checkpoint_path ,gpus=gpu_num)
-else
+else:
     model = unet(gpus=gpu_num)
 
 class TrainLogger(Callback):
