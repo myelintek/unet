@@ -1,0 +1,12 @@
+command: python3 ./main.py
+description: Carvana Image Masking Challenge
+env: myelintek/python-gpu:v9
+gpu: 1
+hashtag:
+- car_masking
+- keras
+- unet
+input:
+- dest: /mlsteam/input/car_masking
+  source: car_masking
+name: em_img_bordering segmentaion
