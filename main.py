@@ -23,8 +23,8 @@ gpus = [x.name for x in device_lib.list_local_devices() if x.device_type == 'GPU
 gpu_num= len(gpus)
 # ===================================== #
 
-train_path='/mlsteam/input/train'
-test_path='/mlsteam/input/test'
+train_path='/mlsteam/input/em_img_bordering/train'
+test_path='/mlsteam/input/em_img_bordering/test'
 predict_path='./data/predict'
 checkpoint_path='./unet_membrane.hdf5'
 restore_path=''
